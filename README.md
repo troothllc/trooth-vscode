@@ -60,7 +60,7 @@ Alternatively, set the `TROOTH_API_KEY` environment variable; the extension read
 
 ## Status during pre-launch
 
-The Trooth API begins production scans on **August 2, 2026**. Before that date, the extension runs in scaffold mode — it validates your configuration, surfaces useful notices, and opens links — so you can install and configure it now and have full functionality the day the API goes live.
+The Trooth API begins production scans on **August 2, 2026**. Before that date, the extension runs in scaffold mode. It validates your configuration, surfaces useful notices, and opens links, so you can install and configure it now and have full functionality the day the API goes live.
 
 ## Cursor compatibility
 
