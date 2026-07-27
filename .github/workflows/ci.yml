@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Syntax check extension.js
+        run: node --check src/extension.js
+
+      - name: Verify package.json is valid JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('package.json'))"
+
+      - name: Verify extension manifest has required fields
+        run: node scripts/validate-manifest.js

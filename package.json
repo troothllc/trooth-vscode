@@ -1,0 +1,98 @@
+{
+  "name": "trooth-vscode",
+  "displayName": "Trooth",
+  "description": "Run compliance scans, check drift, and verify Trust Receipts from VS Code or Cursor.",
+  "version": "0.1.0",
+  "publisher": "troothllc",
+  "license": "Apache-2.0",
+  "homepage": "https://www.trooth.co",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/troothllc/trooth-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/troothllc/trooth-vscode/issues"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "trooth",
+    "compliance",
+    "ai-compliance",
+    "soc2",
+    "iso27001",
+    "eu-ai-act",
+    "nist-ai-rmf",
+    "hipaa",
+    "audit"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "trooth.scan",
+        "title": "Trooth: Run compliance scan",
+        "category": "Trooth"
+      },
+      {
+        "command": "trooth.checkDrift",
+        "title": "Trooth: Check drift status",
+        "category": "Trooth"
+      },
+      {
+        "command": "trooth.verifyReceipt",
+        "title": "Trooth: Verify Trust Receipt",
+        "category": "Trooth"
+      },
+      {
+        "command": "trooth.showTrustCenter",
+        "title": "Trooth: Open Trust Center",
+        "category": "Trooth"
+      },
+      {
+        "command": "trooth.openTrustProfile",
+        "title": "Trooth: Open my Public Trust Profile",
+        "category": "Trooth"
+      }
+    ],
+    "configuration": {
+      "title": "Trooth",
+      "properties": {
+        "trooth.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your Trooth API key. Get one free at https://www.trooth.co. Stored in VS Code Settings; consider using a secret manager for production."
+        },
+        "trooth.host": {
+          "type": "string",
+          "default": "https://api.trooth.co",
+          "description": "Trooth API host. Override for staging or self-hosted environments."
+        },
+        "trooth.frameworks": {
+          "type": "string",
+          "default": "",
+          "description": "Comma-separated list of frameworks to scan against. Empty for all on your tier. Options: soc2, iso27001, eu-ai-act, nist-ai-rmf, hipaa."
+        },
+        "trooth.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the Trooth status indicator in the bottom status bar."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "echo 'No build step for v0.1'",
+    "smoke": "node -e \"require('./src/extension.js'); console.log('extension loads')\""
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
