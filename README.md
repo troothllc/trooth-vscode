@@ -4,22 +4,26 @@
 [![VS Code](https://img.shields.io/badge/VS%20Code-1.85+-007ACC.svg)](https://code.visualstudio.com)
 [![Cursor](https://img.shields.io/badge/Cursor-supported-000000.svg)](https://cursor.sh)
 
-Run Trooth compliance scans, check drift, and verify Trust Receipts without leaving your editor. Works in VS Code and Cursor.
+Witness your posture, check drift, and verify Trust Receipts without leaving your editor. Works in VS Code and Cursor.
+
+Trooth is the witnessed trust network for software and AI companies. This extension puts the build side of Trooth in your editor: scan the project you have open, watch for drift, and open your public record on the Network.
 
 ## What it does
 
-- **Run a compliance scan** on the project you have open
-- **Check drift** since your last scan and surface findings inline
-- **Verify a Trust Receipt** locally (cryptographic verification ships with the production API)
-- **Open the Trust Center** for the current vendor
-- **Open your Public Trust Profile** in one click
-- **Status bar indicator** with your current Trust Score (live during pre-launch as scaffold)
+| In your editor | What it does |
+|---|---|
+| Scan | Scan the project you have open against the frameworks on your plan |
+| Drift | Check drift since your last scan and surface findings inline |
+| Verify | Verify a Trust Receipt locally, so you trust the math and not our servers |
+| Trust Center | Open the Trust Center for the current company |
+| Public record | Open your public trust record on the Network in one click |
+| Status bar | Your current standing, shown in the status bar |
 
-All commands are accessible from the Command Palette (`Cmd+Shift+P` on Mac, `Ctrl+Shift+P` on Windows / Linux). Search for **Trooth:**.
+All commands are on the Command Palette (`Cmd+Shift+P` on Mac, `Ctrl+Shift+P` on Windows or Linux). Search for **Trooth:**.
 
 ## Install
 
-### From source (development)
+### From source
 
 ```bash
 git clone https://github.com/troothllc/trooth-vscode.git
@@ -27,13 +31,13 @@ cd trooth-vscode
 # Open in VS Code and press F5 to launch an Extension Development Host
 ```
 
-### From the Marketplace (after v1.0)
+### From the Marketplace
 
 ```
 ext install troothllc.trooth-vscode
 ```
 
-The Marketplace listing publishes alongside the production API on August 2, 2026.
+Use this once the Marketplace listing is live.
 
 ## Configure
 
@@ -41,9 +45,9 @@ Open Settings (`Cmd+,` / `Ctrl+,`) and search for "trooth". Available settings:
 
 | Setting | Default | Description |
 |---|---|---|
-| `trooth.apiKey` | `""` | Your Trooth API key. Get one free at [trooth.co](https://www.trooth.co). |
+| `trooth.apiKey` | `""` | Your Trooth API key. Get one free at [trooth.co](https://trooth.co). |
 | `trooth.host` | `https://api.trooth.co` | API host. Override for staging environments. |
-| `trooth.frameworks` | `""` | Comma-separated list of frameworks to scan against. Empty for all on your tier. |
+| `trooth.frameworks` | `""` | Comma-separated list of frameworks to scan against. Empty for all on your plan. |
 | `trooth.showStatusBar` | `true` | Show the Trooth indicator in the bottom status bar. |
 
 Alternatively, set the `TROOTH_API_KEY` environment variable; the extension reads it as a fallback.
@@ -56,15 +60,11 @@ Alternatively, set the `TROOTH_API_KEY` environment variable; the extension read
 | `Trooth: Check drift status` | Show drift since the last scan. |
 | `Trooth: Verify Trust Receipt` | Verify a Trooth-signed receipt JSON file. |
 | `Trooth: Open Trust Center` | Open trooth.co/security in your browser. |
-| `Trooth: Open my Public Trust Profile` | Open your vendor profile. |
-
-## Status during pre-launch
-
-The Trooth API begins production scans on **August 2, 2026**. Before that date, the extension runs in scaffold mode. It validates your configuration, surfaces useful notices, and opens links, so you can install and configure it now and have full functionality the day the API goes live.
+| `Trooth: Open my Public Trust Profile` | Open your record on the Network. |
 
 ## Cursor compatibility
 
-This extension uses only the public VS Code Extension API and is fully compatible with Cursor (the AI-first fork of VS Code). Install from source or via VSIX in Cursor's extension panel.
+This extension uses only the public VS Code Extension API and is fully compatible with Cursor, the AI-first fork of VS Code. Install from source or via VSIX in Cursor's extension panel.
 
 ## Security
 
@@ -76,6 +76,6 @@ Apache License 2.0. See [LICENSE](LICENSE).
 
 ## About Trooth
 
-Trooth provides cryptographic compliance infrastructure for AI products. Continuous monitoring against SOC 2, ISO 27001, EU AI Act, NIST AI RMF, and HIPAA. Free at Bronze.
+Trooth is the witnessed trust network for software and AI companies. A company gets witnessed once, across identity, security, privacy, and AI practices, each with a source and a date, and buyers and their AI agents read a current, signed record with no login. Get witnessed at [trooth.co/signup](https://trooth.co/signup).
 
-[trooth.co](https://www.trooth.co) · [Trust Center](https://www.trooth.co/security)
+[trooth.co](https://trooth.co) · [Security](https://trooth.co/security)
