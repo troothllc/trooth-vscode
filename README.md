@@ -1,81 +1,102 @@
-# Trooth for VS Code and Cursor
+# trooth-vscode
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VS Code](https://img.shields.io/badge/VS%20Code-1.85+-007ACC.svg)](https://code.visualstudio.com)
-[![Cursor](https://img.shields.io/badge/Cursor-supported-000000.svg)](https://cursor.sh)
+The Trooth extension for VS Code and Cursor.
 
-Witness your posture, check drift, and verify Trust Receipts without leaving your editor. Works in VS Code and Cursor.
+Trooth operates the Trooth Network: one public, signed, machine-readable record per company, carrying its identity, products and demos, commercial terms, domain and marketing links, people, documents, security and privacy posture, AI practices, procurement terms and relationships. It is Trooth's only product and it is free.
 
-Trooth is the witnessed trust network for software and AI companies. This extension puts the build side of Trooth in your editor: scan the project you have open, watch for drift, and open your public record on the Network.
+**Trooth witnesses and dates facts. It does not score, rate, rank or certify anyone.**
 
-## What it does
+## What this version does, exactly
 
-| In your editor | What it does |
+Version 0.1.0 is a scaffold. It registers five commands, puts an item in the status bar, reads four settings and opens links. **It makes no network request of any kind.** There is no code in `src/extension.js` that opens a socket, and nothing in this extension reads a company record, checks a signature or sends anything to Trooth or anywhere else.
+
+That is written down here rather than left to be discovered, because an editor extension that quietly did any of those things would be the opposite of the point.
+
+| Command id | What invoking it does |
 |---|---|
-| Scan | Scan the project you have open against the frameworks on your plan |
-| Drift | Check drift since your last scan and surface findings inline |
-| Verify | Verify a Trust Receipt locally, so you trust the math and not our servers |
-| Trust Center | Open the Trust Center for the current company |
-| Public record | Open your public trust record on the Network in one click |
-| Status bar | Your current standing, shown in the status bar |
+| `trooth.scan` | Checks that a key is configured, then shows a notice with two buttons that open [trooth.co/security](https://www.trooth.co/security) and [trooth.co/docs/api](https://www.trooth.co/docs/api) in your browser. |
+| `trooth.checkDrift` | Checks that a key is configured, then shows a notice. |
+| `trooth.verifyReceipt` | Opens a file dialog filtered to `.json` and shows the path you chose. It does not check a signature. |
+| `trooth.showTrustCenter` | Opens [trooth.co/security](https://www.trooth.co/security) in your browser. |
+| `trooth.openTrustProfile` | Opens [trooth.co](https://www.trooth.co) in your browser. |
 
-All commands are on the Command Palette (`Cmd+Shift+P` on Mac, `Ctrl+Shift+P` on Windows or Linux). Search for **Trooth:**.
+The command palette lists them under **Trooth** (`Cmd+Shift+P` on macOS, `Ctrl+Shift+P` elsewhere).
 
-## Install
+The status bar item sits on the right, reads `Trooth`, and runs `trooth.scan` when clicked. It appears unless `trooth.showStatusBar` is turned off, and it is rebuilt when you change that setting.
 
-### From source
+## Settings
+
+| Setting | Default | What it does in this version |
+|---|---|---|
+| `trooth.showStatusBar` | `true` | Shows or hides the status bar item. Takes effect immediately. |
+| `trooth.apiKey` | `""` | Read only to decide whether a command shows the "no key configured" warning. It is never sent anywhere. `TROOTH_API_KEY` in the environment is used when the setting is empty. |
+| `trooth.host` | `https://api.trooth.co` | Read and then not used, because nothing here makes a request. |
+| `trooth.frameworks` | `""` | Read and then not used. |
+
+Two of the four settings therefore have no observable effect. They are listed here because the manifest declares them and you will see them in the settings UI, and it is better to say what they do than to let you infer it.
+
+## Running it
+
+There is nothing to build and nothing to install: `package.json` declares no dependencies and no development dependencies, and its `vscode:prepublish` script does no work. The extension is plain JavaScript loaded from `src/extension.js`.
 
 ```bash
 git clone https://github.com/troothllc/trooth-vscode.git
-cd trooth-vscode
-# Open in VS Code and press F5 to launch an Extension Development Host
 ```
 
-### From the Marketplace
+Open the folder in VS Code or Cursor and start an Extension Development Host from the Run and Debug view. Requires VS Code 1.85 or newer, which `engines.vscode` pins.
 
+This README carries no Marketplace install command, because the manifest is at 0.1.0 and this repository builds no package.
+
+### Cursor
+
+The extension calls only the public VS Code extension API: `commands`, `window`, `workspace`, `env` and `Uri`. Nothing in it is specific to VS Code's own build, so it runs in Cursor the same way.
+
+### Checks
+
+```bash
+npm run smoke   # loads src/extension.js and prints that it loaded
 ```
-ext install troothllc.trooth-vscode
+
+CI runs three things on every push and pull request: `node --check src/extension.js`, a JSON parse of `package.json`, and `scripts/validate-manifest.js`, which fails the build when the manifest is missing `engines.vscode`, `main`, `publisher`, `displayName` or at least one declared command.
+
+## What to use meanwhile
+
+The command line reader does today what this extension is being built toward, and VS Code's integrated terminal is as close to the editor as it needs to be:
+
+```bash
+npx trooth check stripe.com
 ```
 
-Use this once the Marketplace listing is live.
+That reads a company's published record from the public Network. No key, no account, and nothing about you is sent. `trooth lint` reads what your own repository's infrastructure declares, locally, and opens no sockets. Both are documented at [`troothllc/trooth-cli`](https://github.com/troothllc/trooth-cli) and [trooth.co/cli](https://www.trooth.co/cli).
 
-## Configure
+To check a Trooth signature yourself, the keys are published at [trooth.co/verify/keys](https://www.trooth.co/verify/keys) and the procedure is written up at [`troothllc/trust-verifier-sdk`](https://github.com/troothllc/trust-verifier-sdk).
 
-Open Settings (`Cmd+,` / `Ctrl+,`) and search for "trooth". Available settings:
+## Known gaps in this version
 
-| Setting | Default | Description |
-|---|---|---|
-| `trooth.apiKey` | `""` | Your Trooth API key. Get one free at [trooth.co](https://trooth.co). |
-| `trooth.host` | `https://api.trooth.co` | API host. Override for staging environments. |
-| `trooth.frameworks` | `""` | Comma-separated list of frameworks to scan against. Empty for all on your plan. |
-| `trooth.showStatusBar` | `true` | Show the Trooth indicator in the bottom status bar. |
+Named rather than left for you to find.
 
-Alternatively, set the `TROOTH_API_KEY` environment variable; the extension reads it as a fallback.
-
-## Commands
-
-| Command | Description |
-|---|---|
-| `Trooth: Run compliance scan` | Run a scan on the current project. |
-| `Trooth: Check drift status` | Show drift since the last scan. |
-| `Trooth: Verify Trust Receipt` | Verify a Trooth-signed receipt JSON file. |
-| `Trooth: Open Trust Center` | Open trooth.co/security in your browser. |
-| `Trooth: Open my Public Trust Profile` | Open your record on the Network. |
-
-## Cursor compatibility
-
-This extension uses only the public VS Code Extension API and is fully compatible with Cursor, the AI-first fork of VS Code. Install from source or via VSIX in Cursor's extension panel.
+- No command reads a record, and none checks a signature. `trooth.verifyReceipt` picks a file and stops.
+- Three of the five command titles in `package.json`, several of its keywords, and two of the notice strings in `src/extension.js` name products, certifications and dates that belong to an earlier version of this business. The Marketplace renders the manifest, so those strings are a public surface and they are wrong on it.
+- `trooth.host` and `trooth.frameworks` are read and unused.
 
 ## Security
 
-Pass your API key via VS Code Settings or via the `TROOTH_API_KEY` environment variable. Avoid committing your settings file with the key in it. See [SECURITY.md](https://github.com/troothllc/.github/blob/main/SECURITY.md) for the vulnerability disclosure policy.
+Your API key stays on your machine. This extension reads it to decide whether to show a warning and sends it nowhere, but treat it as a secret anyway: settings files get committed. Prefer `TROOTH_API_KEY` in your environment, or your own secret manager.
+
+Report a vulnerability through the [Vulnerability Disclosure Policy](https://www.trooth.co/security/vulnerability-disclosure-policy).
+
+## Links
+
+- The Network: [trooth.co/network](https://www.trooth.co/network)
+- The CLI: [trooth.co/cli](https://www.trooth.co/cli)
+- Developers: [trooth.co/developers](https://www.trooth.co/developers)
+- Signing keys: [trooth.co/verify/keys](https://www.trooth.co/verify/keys)
+- Trust Center: [trooth.co/security](https://www.trooth.co/security)
+- Publish your own record, free: [trooth.co/get-started](https://www.trooth.co/get-started)
+- Contact: [trooth.co/contact](https://www.trooth.co/contact)
 
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE).
 
-## About Trooth
-
-Trooth is the witnessed trust network for software and AI companies. A company gets witnessed once, across identity, security, privacy, and AI practices, each with a source and a date, and buyers and their AI agents read a current, signed record with no login. Get witnessed at [trooth.co/signup](https://trooth.co/signup).
-
-[trooth.co](https://trooth.co) · [Security](https://trooth.co/security)
+Trooth automates. Trooth never signs for you.
