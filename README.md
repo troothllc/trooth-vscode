@@ -8,7 +8,7 @@ Trooth operates the Trooth Network: one public, signed, machine-readable record 
 
 ## What this version does, exactly
 
-Version 0.1.0 is a scaffold. It registers five commands, puts an item in the status bar, reads four settings and opens links. **It makes no network request of any kind.** There is no code in `src/extension.js` that opens a socket, and nothing in this extension reads a company record, checks a signature or sends anything to Trooth or anywhere else.
+Version 0.1.0 is a scaffold. It registers five commands, puts an item in the status bar, reads four settings and opens links. **It makes no network request of its own.** A link it opens is handed to your browser, which loads it like any other link. There is no code in `src/extension.js` that opens a socket, and nothing in this extension reads a company record, checks a signature or sends anything to Trooth or anywhere else.
 
 That is written down here rather than left to be discovered, because an editor extension that quietly did any of those things would be the opposite of the point.
 
@@ -18,18 +18,18 @@ That is written down here rather than left to be discovered, because an editor e
 | `trooth.checkDrift` | Checks that a key is configured, then shows a notice. |
 | `trooth.verifyReceipt` | Opens a file dialog filtered to `.json` and shows the path you chose. It does not check a signature. |
 | `trooth.showTrustCenter` | Opens [trooth.co/security](https://www.trooth.co/security) in your browser. |
-| `trooth.openTrustProfile` | Opens [trooth.co](https://www.trooth.co) in your browser. |
+| `trooth.openTrustProfile` | Shows a notice and opens [trooth.co](https://www.trooth.co) in your browser. It does not open a Trust Profile. |
 
 The command palette lists them under **Trooth** (`Cmd+Shift+P` on macOS, `Ctrl+Shift+P` elsewhere).
 
-The status bar item sits on the right, reads `Trooth`, and runs `trooth.scan` when clicked. It appears unless `trooth.showStatusBar` is turned off, and it is rebuilt when you change that setting.
+The status bar item sits on the right, shows a shield icon and `Trooth`, and runs `trooth.scan` when clicked. It appears unless `trooth.showStatusBar` is turned off, and it is rebuilt when you change that setting.
 
 ## Settings
 
 | Setting | Default | What it does in this version |
 |---|---|---|
 | `trooth.showStatusBar` | `true` | Shows or hides the status bar item. Takes effect immediately. |
-| `trooth.apiKey` | `""` | Read only to decide whether a command shows the "no key configured" warning. It is never sent anywhere. `TROOTH_API_KEY` in the environment is used when the setting is empty. |
+| `trooth.apiKey` | `""` | Used only to decide whether `trooth.scan` and `trooth.checkDrift` show the "Trooth API key is not set" warning. It is never sent anywhere. `TROOTH_API_KEY` in the environment is used when the setting is empty. |
 | `trooth.host` | `https://api.trooth.co` | Read and then not used, because nothing here makes a request. |
 | `trooth.frameworks` | `""` | Read and then not used. |
 
@@ -49,7 +49,7 @@ This README carries no Marketplace install command, because the manifest is at 0
 
 ### Cursor
 
-The extension calls only the public VS Code extension API: `commands`, `window`, `workspace`, `env` and `Uri`. Nothing in it is specific to VS Code's own build, so it runs in Cursor the same way.
+The extension calls only the public VS Code extension API: `commands`, `window`, `workspace`, `env`, `Uri` and `StatusBarAlignment`. Nothing in it is specific to VS Code's own build, so it is expected to run in Cursor the same way. CI does not load it in either editor.
 
 ### Checks
 
@@ -57,17 +57,17 @@ The extension calls only the public VS Code extension API: `commands`, `window`,
 npm run smoke   # loads src/extension.js and prints that it loaded
 ```
 
-CI runs three things on every push and pull request: `node --check src/extension.js`, a JSON parse of `package.json`, and `scripts/validate-manifest.js`, which fails the build when the manifest is missing `engines.vscode`, `main`, `publisher`, `displayName` or at least one declared command.
+CI runs three things on every push to `main`, on every pull request and when started by hand: `node --check src/extension.js`, a JSON parse of `package.json`, and `scripts/validate-manifest.js`, which fails the build when the manifest is missing `engines.vscode`, `main`, `publisher`, `displayName` or at least one declared command.
 
 ## What to use meanwhile
 
-The command line reader does today what this extension is being built toward, and VS Code's integrated terminal is as close to the editor as it needs to be:
+The command line reader does today what this extension is meant to do, and VS Code's integrated terminal is as close to the editor as it needs to be:
 
 ```bash
 npx trooth check stripe.com
 ```
 
-That reads a company's published record from the public Network. No key, no account, and nothing about you is sent. `trooth lint` reads what your own repository's infrastructure declares, locally, and opens no sockets. Both are documented at [`troothllc/trooth-cli`](https://github.com/troothllc/trooth-cli) and [trooth.co/cli](https://www.trooth.co/cli).
+That reads a company's published record from the public Network. No key and no account. The CLI downloads the public list of records and finds the domain on your machine, so the request does not carry the domain you asked about; Trooth's server still sees your IP address, as with any HTTPS request. `trooth lint` reads what your own repository's infrastructure declares, locally, and opens no sockets. Both are documented at [`troothllc/trooth-cli`](https://github.com/troothllc/trooth-cli) and [trooth.co/cli](https://www.trooth.co/cli).
 
 To check a Trooth signature yourself, the keys are published at [trooth.co/verify/keys](https://www.trooth.co/verify/keys) and the procedure is written up at [`troothllc/trust-verifier-sdk`](https://github.com/troothllc/trust-verifier-sdk).
 
@@ -76,12 +76,13 @@ To check a Trooth signature yourself, the keys are published at [trooth.co/verif
 Named rather than left for you to find.
 
 - No command reads a record, and none checks a signature. `trooth.verifyReceipt` picks a file and stops.
-- Three of the five command titles in `package.json`, several of its keywords, and two of the notice strings in `src/extension.js` name products, certifications and dates that belong to an earlier version of this business. The Marketplace renders the manifest, so those strings are a public surface and they are wrong on it.
+- Four of the five command titles and the `trooth.host` and `trooth.frameworks` setting descriptions in `package.json`, and the four information notices, the status bar tooltip and the file dialog title in `src/extension.js`, name products, frameworks and dates that belong to an earlier version of this business, or describe work this version does not do. The manifest is public in this repository and is the Marketplace listing for any package built from it, so those strings are a public surface and they are wrong on it.
+- `trooth.scan` and `trooth.checkDrift` show their notice only once a key is set, although neither uses the key.
 - `trooth.host` and `trooth.frameworks` are read and unused.
 
 ## Security
 
-Your API key stays on your machine. This extension reads it to decide whether to show a warning and sends it nowhere, but treat it as a secret anyway: settings files get committed. Prefer `TROOTH_API_KEY` in your environment, or your own secret manager.
+This extension reads your API key only to decide whether to show a warning, and sends it nowhere. Treat it as a secret anyway: settings files get committed. Prefer `TROOTH_API_KEY` in your environment, or your own secret manager.
 
 Report a vulnerability through the [Vulnerability Disclosure Policy](https://www.trooth.co/security/vulnerability-disclosure-policy).
 
@@ -99,4 +100,4 @@ Report a vulnerability through the [Vulnerability Disclosure Policy](https://www
 
 Apache License 2.0. See [LICENSE](LICENSE).
 
-Trooth automates. Trooth never signs for you.
+Trooth signs what it witnessed. It never signs on a company's behalf.

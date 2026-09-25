@@ -1,7 +1,7 @@
 {
   "name": "trooth-vscode",
   "displayName": "Trooth",
-  "description": "Run compliance scans, check drift, and verify Trust Receipts from VS Code or Cursor.",
+  "description": "Scaffold of the Trooth extension for VS Code and Cursor. Version 0.1.0 opens trooth.co links; it reads no records and checks no signatures.",
   "version": "0.1.0",
   "publisher": "troothllc",
   "license": "Apache-2.0",
@@ -22,14 +22,7 @@
   ],
   "keywords": [
     "trooth",
-    "compliance",
-    "ai-compliance",
-    "soc2",
-    "iso27001",
-    "eu-ai-act",
-    "nist-ai-rmf",
-    "hipaa",
-    "audit"
+    "trooth-network"
   ],
   "main": "./src/extension.js",
   "activationEvents": [
