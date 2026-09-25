@@ -4,7 +4,7 @@ The Trooth extension for VS Code and Cursor.
 
 Trooth operates the Trooth Network: one public, signed, machine-readable record per company, carrying its identity, products and demos, commercial terms, domain and marketing links, people, documents, security and privacy posture, AI practices, procurement terms and relationships. It is Trooth's only product and it is free.
 
-**Trooth witnesses and dates facts. It does not score, rate, rank or certify anyone.**
+**Trooth witnesses and dates facts. It does not grade, rate or rank anyone.**
 
 ## What this version does, exactly
 
@@ -69,7 +69,7 @@ npx trooth check stripe.com
 
 That reads a company's published record from the public Network. No key and no account. The CLI downloads the public list of records and finds the domain on your machine, so the request does not carry the domain you asked about; Trooth's server still sees your IP address, as with any HTTPS request. `trooth lint` reads what your own repository's infrastructure declares, locally, and opens no sockets. Both are documented at [`troothllc/trooth-cli`](https://github.com/troothllc/trooth-cli) and [trooth.co/cli](https://www.trooth.co/cli).
 
-To check a Trooth signature yourself, the keys are published at [trooth.co/verify/keys](https://www.trooth.co/verify/keys) and the procedure is written up at [`troothllc/trust-verifier-sdk`](https://github.com/troothllc/trust-verifier-sdk).
+To check a Trooth signature yourself, the keys are published at [trooth.co/verify/keys](https://www.trooth.co/verify/keys) and the procedure is written up at [`troothllc/trooth-signatures`](https://github.com/troothllc/trooth-signatures).
 
 ## Known gaps in this version
 
