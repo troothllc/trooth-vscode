@@ -1,8 +1,8 @@
 {
   "name": "trooth-vscode",
   "displayName": "Trooth",
-  "description": "Scaffold of the Trooth extension for VS Code and Cursor. Version 0.1.0 opens trooth.co links; it reads no records and checks no signatures.",
-  "version": "0.1.0",
+  "description": "Scaffold of the Trooth extension for VS Code and Cursor. It opens trooth.co pages in your browser and makes no network request of its own; it reads no records and checks no signatures.",
+  "version": "0.1.1",
   "publisher": "troothllc",
   "license": "Apache-2.0",
   "homepage": "https://www.trooth.co",
@@ -17,7 +17,6 @@
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Linters",
     "Other"
   ],
   "keywords": [
@@ -32,27 +31,27 @@
     "commands": [
       {
         "command": "trooth.scan",
-        "title": "Trooth: Run compliance scan",
+        "title": "Show Trust Center and API Docs Links",
         "category": "Trooth"
       },
       {
         "command": "trooth.checkDrift",
-        "title": "Trooth: Check drift status",
+        "title": "Show How to Read a Record from the Terminal",
         "category": "Trooth"
       },
       {
         "command": "trooth.verifyReceipt",
-        "title": "Trooth: Verify Trust Receipt",
+        "title": "Choose a JSON File (No Signature Check)",
         "category": "Trooth"
       },
       {
         "command": "trooth.showTrustCenter",
-        "title": "Trooth: Open Trust Center",
+        "title": "Open Trooth's Trust Center",
         "category": "Trooth"
       },
       {
         "command": "trooth.openTrustProfile",
-        "title": "Trooth: Open my Public Trust Profile",
+        "title": "Open trooth.co",
         "category": "Trooth"
       }
     ],
@@ -62,22 +61,22 @@
         "trooth.apiKey": {
           "type": "string",
           "default": "",
-          "description": "Your Trooth API key. Get one free at https://www.trooth.co. Stored in VS Code Settings; consider using a secret manager for production."
+          "description": "Not used by this version: it has no effect and is never sent anywhere. Settings files can be committed, so do not store a real key here."
         },
         "trooth.host": {
           "type": "string",
           "default": "https://api.trooth.co",
-          "description": "Trooth API host. Override for staging or self-hosted environments."
+          "description": "Not used by this version, which makes no network request of its own."
         },
         "trooth.frameworks": {
           "type": "string",
           "default": "",
-          "description": "Comma-separated list of frameworks to scan against. Empty for all on your tier. Options: soc2, iso27001, eu-ai-act, nist-ai-rmf, hipaa."
+          "description": "Not used by this version."
         },
         "trooth.showStatusBar": {
           "type": "boolean",
           "default": true,
-          "description": "Show the Trooth status indicator in the bottom status bar."
+          "description": "Show the Trooth item in the status bar. Clicking it shows links to Trooth's Trust Center and API docs."
         }
       }
     }

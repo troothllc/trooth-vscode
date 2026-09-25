@@ -2,14 +2,14 @@
 
 // Trooth VS Code / Cursor extension v0.1
 //
-// During the pre-launch window (before August 2, 2026), commands run in
-// scaffold mode: they validate configuration and surface notices, but the
-// production API integration ships when api.trooth.co goes live.
+// This version is a scaffold. Its commands show notices and hand trooth.co
+// links to the browser. It makes no network request of its own, reads no
+// company record and checks no signature.
 //
 // vscode module is provided by the host (VS Code or Cursor). It is only
 // required when the extension activates, so this file imports it lazily.
 
-const SCAFFOLD_NOTICE = 'Trooth runs in scaffold mode through August 1, 2026. Production scans begin August 2, 2026 (EU AI Act enforcement day). Configure your API key in Settings now to have full functionality the day the API goes live.';
+const SCAFFOLD_NOTICE = 'This version of the Trooth extension is a scaffold. It opens trooth.co pages in your browser and makes no network request of its own. It does not read a company record or check a signature.';
 const TRUST_CENTER_URL = 'https://www.trooth.co/security';
 const SIGNUP_URL = 'https://www.trooth.co';
 const DOCS_URL = 'https://www.trooth.co/docs/api';
@@ -27,40 +27,19 @@ function getConfig() {
   };
 }
 
-function ensureApiKey() {
-  const config = getConfig();
-  if (config.apiKey) return true;
-  vscode.window
-    .showWarningMessage(
-      'Trooth API key is not set. Add it in Settings -> Extensions -> Trooth, or set the TROOTH_API_KEY environment variable.',
-      'Open Settings',
-      'Get a key'
-    )
-    .then(function (choice) {
-      if (choice === 'Open Settings') {
-        vscode.commands.executeCommand('workbench.action.openSettings', 'trooth.apiKey');
-      } else if (choice === 'Get a key') {
-        vscode.env.openExternal(vscode.Uri.parse(SIGNUP_URL));
-      }
-    });
-  return false;
-}
-
 function commandScan() {
-  if (!ensureApiKey()) return;
-  vscode.window.showInformationMessage(SCAFFOLD_NOTICE, 'Open Trust Center', 'View docs').then(function (choice) {
+  vscode.window.showInformationMessage(SCAFFOLD_NOTICE, 'Open Trust Center', 'View API docs').then(function (choice) {
     if (choice === 'Open Trust Center') {
       vscode.env.openExternal(vscode.Uri.parse(TRUST_CENTER_URL));
-    } else if (choice === 'View docs') {
+    } else if (choice === 'View API docs') {
       vscode.env.openExternal(vscode.Uri.parse(DOCS_URL));
     }
   });
 }
 
 function commandCheckDrift() {
-  if (!ensureApiKey()) return;
   vscode.window.showInformationMessage(
-    'Drift checks ship with the production API on August 2, 2026. Subscribe to the Trooth Network newsletter for the launch announcement.'
+    'This extension does not read company records. To read a company\'s public record, run "npx trooth check <domain>" in the integrated terminal. It needs no key and no account.'
   );
 }
 
@@ -68,13 +47,13 @@ function commandVerifyReceipt() {
   vscode.window
     .showOpenDialog({
       canSelectMany: false,
-      filters: { 'Trust Receipt': ['json'] },
-      title: 'Select a Trooth Trust Receipt to verify'
+      filters: { 'JSON': ['json'] },
+      title: 'Choose a JSON file (this version does not check signatures)'
     })
     .then(function (uris) {
       if (!uris || uris.length === 0) return;
       vscode.window.showInformationMessage(
-        'Selected ' + uris[0].fsPath + '. Cryptographic verification ships with the @trooth/verifier library (publishing alongside the production API). For now, use https://www.trooth.co/security to verify against the canonical registry.'
+        'Selected ' + uris[0].fsPath + '. This version does not check signatures. Trooth\'s public signing keys are at https://www.trooth.co/verify/keys, and the procedure for checking a signature yourself is at https://github.com/troothllc/trooth-signatures.'
       );
     });
 }
@@ -85,7 +64,7 @@ function commandShowTrustCenter() {
 
 function commandOpenTrustProfile() {
   vscode.window.showInformationMessage(
-    'Your Public Trust Profile becomes available after your first scan. Visit ' + SIGNUP_URL + ' to sign up.'
+    'Opening ' + SIGNUP_URL + ' in your browser. This version does not open a Trust Profile. To publish your own company\'s record, free, go to https://www.trooth.co/get-started.'
   );
   vscode.env.openExternal(vscode.Uri.parse(SIGNUP_URL));
 }
@@ -95,7 +74,7 @@ function createStatusBarItem() {
   if (!config.showStatusBar) return null;
   const item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   item.text = '$(shield) Trooth';
-  item.tooltip = 'Trooth Compliance (scaffold mode through Aug 1, 2026). Click to run a scan.';
+  item.tooltip = 'Trooth extension (scaffold). Click for links to Trooth\'s Trust Center and API docs.';
   item.command = 'trooth.scan';
   item.show();
   return item;
