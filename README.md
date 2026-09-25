@@ -8,19 +8,21 @@ Trooth operates the Trooth Network: one public, signed, machine-readable record 
 
 ## What this version does, exactly
 
-Version 0.1.0 is a scaffold. It registers five commands, puts an item in the status bar, reads four settings and opens links. **It makes no network request of its own.** A link it opens is handed to your browser, which loads it like any other link. There is no code in `src/extension.js` that opens a socket, and nothing in this extension reads a company record, checks a signature or sends anything to Trooth or anywhere else.
+Version 0.1.1 is a scaffold. It registers five commands, puts an item in the status bar, reads four settings and opens links. **It makes no network request of its own.** A link it opens is handed to your browser, which loads it like any other link. There is no code in `src/extension.js` that opens a socket, and nothing in this extension reads a company record, checks a signature or sends anything to Trooth or anywhere else.
 
 That is written down here rather than left to be discovered, because an editor extension that quietly did any of those things would be the opposite of the point.
 
-| Command id | What invoking it does |
-|---|---|
-| `trooth.scan` | Checks that a key is configured, then shows a notice with two buttons that open [trooth.co/security](https://www.trooth.co/security) and [trooth.co/docs/api](https://www.trooth.co/docs/api) in your browser. |
-| `trooth.checkDrift` | Checks that a key is configured, then shows a notice. |
-| `trooth.verifyReceipt` | Opens a file dialog filtered to `.json` and shows the path you chose. It does not check a signature. |
-| `trooth.showTrustCenter` | Opens [trooth.co/security](https://www.trooth.co/security) in your browser. |
-| `trooth.openTrustProfile` | Shows a notice and opens [trooth.co](https://www.trooth.co) in your browser. It does not open a Trust Profile. |
+| Command id | Title in the command palette | What invoking it does |
+|---|---|---|
+| `trooth.scan` | Show Trust Center and API Docs Links | Shows a notice that this version is a scaffold, with two buttons that open [trooth.co/security](https://www.trooth.co/security) and [trooth.co/docs/api](https://www.trooth.co/docs/api) in your browser. |
+| `trooth.checkDrift` | Show How to Read a Record from the Terminal | Shows a notice that points to `npx trooth check <domain>` in the integrated terminal. |
+| `trooth.verifyReceipt` | Choose a JSON File (No Signature Check) | Opens a file dialog filtered to `.json` and shows the path you chose. It does not check a signature. The notice gives the addresses of Trooth's signing keys and of the procedure for checking a signature yourself. |
+| `trooth.showTrustCenter` | Open Trooth's Trust Center | Opens [trooth.co/security](https://www.trooth.co/security) in your browser. |
+| `trooth.openTrustProfile` | Open trooth.co | Shows a notice and opens [trooth.co](https://www.trooth.co) in your browser. It does not open a Trust Profile. |
 
-The command palette lists them under **Trooth** (`Cmd+Shift+P` on macOS, `Ctrl+Shift+P` elsewhere).
+None of the commands asks for a key.
+
+The command palette lists them under **Trooth**, as `Trooth: <title>` (`Cmd+Shift+P` on macOS, `Ctrl+Shift+P` elsewhere).
 
 The status bar item sits on the right, shows a shield icon and `Trooth`, and runs `trooth.scan` when clicked. It appears unless `trooth.showStatusBar` is turned off, and it is rebuilt when you change that setting.
 
@@ -29,11 +31,11 @@ The status bar item sits on the right, shows a shield icon and `Trooth`, and run
 | Setting | Default | What it does in this version |
 |---|---|---|
 | `trooth.showStatusBar` | `true` | Shows or hides the status bar item. Takes effect immediately. |
-| `trooth.apiKey` | `""` | Used only to decide whether `trooth.scan` and `trooth.checkDrift` show the "Trooth API key is not set" warning. It is never sent anywhere. `TROOTH_API_KEY` in the environment is used when the setting is empty. |
+| `trooth.apiKey` | `""` | Read and then not used. It is never sent anywhere. `TROOTH_API_KEY` in the environment is read when the setting is empty, and is not used either. |
 | `trooth.host` | `https://api.trooth.co` | Read and then not used, because nothing here makes a request. |
 | `trooth.frameworks` | `""` | Read and then not used. |
 
-Two of the four settings therefore have no observable effect. They are listed here because the manifest declares them and you will see them in the settings UI, and it is better to say what they do than to let you infer it.
+Three of the four settings therefore have no observable effect. They are listed here because the manifest declares them and you will see them in the settings UI, and it is better to say what they do than to let you infer it.
 
 ## Running it
 
@@ -45,7 +47,7 @@ git clone https://github.com/troothllc/trooth-vscode.git
 
 Open the folder in VS Code or Cursor and start an Extension Development Host from the Run and Debug view. Requires VS Code 1.85 or newer, which `engines.vscode` pins.
 
-This README carries no Marketplace install command, because the manifest is at 0.1.0 and this repository builds no package.
+This README carries no Marketplace install command, because the manifest is at 0.1.1 and this repository builds no package.
 
 ### Cursor
 
@@ -76,13 +78,11 @@ To check a Trooth signature yourself, the keys are published at [trooth.co/verif
 Named rather than left for you to find.
 
 - No command reads a record, and none checks a signature. `trooth.verifyReceipt` picks a file and stops.
-- Four of the five command titles and the `trooth.host` and `trooth.frameworks` setting descriptions in `package.json`, and the four information notices, the status bar tooltip and the file dialog title in `src/extension.js`, name products, frameworks and dates that belong to an earlier version of this business, or describe work this version does not do. The manifest is public in this repository and is the Marketplace listing for any package built from it, so those strings are a public surface and they are wrong on it.
-- `trooth.scan` and `trooth.checkDrift` show their notice only once a key is set, although neither uses the key.
-- `trooth.host` and `trooth.frameworks` are read and unused.
+- `trooth.apiKey`, `trooth.host` and `trooth.frameworks` are read and unused. The manifest describes each of them as not used by this version.
 
 ## Security
 
-This extension reads your API key only to decide whether to show a warning, and sends it nowhere. Treat it as a secret anyway: settings files get committed. Prefer `TROOTH_API_KEY` in your environment, or your own secret manager.
+This version reads the `trooth.apiKey` setting, does nothing with it and sends it nowhere. It needs no key, so leave the setting empty: settings files get committed, and a real key stored there can leak with them.
 
 Report a vulnerability through the [Vulnerability Disclosure Policy](https://www.trooth.co/security/vulnerability-disclosure-policy).
 
