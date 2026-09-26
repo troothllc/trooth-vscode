@@ -1,8 +1,8 @@
 {
   "name": "trooth-vscode",
   "displayName": "Trooth",
-  "description": "Scaffold of the Trooth extension for VS Code and Cursor. It opens trooth.co pages in your browser and makes no network request of its own; it reads no records and checks no signatures.",
-  "version": "0.1.1",
+  "description": "Scaffold of the Trooth extension for VS Code and Cursor. It opens trooth.co pages in your browser and makes no network request of its own; it reads no records, checks no signatures and asks for no key.",
+  "version": "0.1.2",
   "publisher": "troothllc",
   "license": "Apache-2.0",
   "homepage": "https://www.trooth.co",
@@ -40,8 +40,8 @@
         "category": "Trooth"
       },
       {
-        "command": "trooth.verifyReceipt",
-        "title": "Choose a JSON File (No Signature Check)",
+        "command": "trooth.showSignatureInstructions",
+        "title": "Open How to Check a Signature",
         "category": "Trooth"
       },
       {
@@ -58,21 +58,6 @@
     "configuration": {
       "title": "Trooth",
       "properties": {
-        "trooth.apiKey": {
-          "type": "string",
-          "default": "",
-          "description": "Not used by this version: it has no effect and is never sent anywhere. Settings files can be committed, so do not store a real key here."
-        },
-        "trooth.host": {
-          "type": "string",
-          "default": "https://api.trooth.co",
-          "description": "Not used by this version, which makes no network request of its own."
-        },
-        "trooth.frameworks": {
-          "type": "string",
-          "default": "",
-          "description": "Not used by this version."
-        },
         "trooth.showStatusBar": {
           "type": "boolean",
           "default": true,
@@ -83,7 +68,7 @@
   },
   "scripts": {
     "vscode:prepublish": "echo 'No build step for v0.1'",
-    "smoke": "node -e \"require('./src/extension.js'); console.log('extension loads')\""
+    "smoke": "node scripts/smoke.js"
   },
   "devDependencies": {},
   "dependencies": {}

@@ -23,6 +23,17 @@ if (!pkg.displayName) {
   errors.push('displayName is required');
 }
 
+// A setting whose name or description suggests a credential is refused. This
+// scaffold asks for no key; if a later version needs one, it belongs in the
+// editor's secret storage, reviewed as a security-sensitive change, never in a
+// settings file that can be committed.
+const props = (pkg.contributes && pkg.contributes.configuration && pkg.contributes.configuration.properties) || {};
+for (const [name, def] of Object.entries(props)) {
+  if (/key|token|secret|password|credential/i.test(name + ' ' + (def.description || ''))) {
+    errors.push('setting ' + name + ' looks like a credential; this extension stores none');
+  }
+}
+
 if (errors.length > 0) {
   for (const err of errors) {
     console.error('::error::' + err);

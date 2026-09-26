@@ -13,16 +13,17 @@ const SCAFFOLD_NOTICE = 'This version of the Trooth extension is a scaffold. It 
 const TRUST_CENTER_URL = 'https://www.trooth.co/security';
 const SIGNUP_URL = 'https://www.trooth.co';
 const DOCS_URL = 'https://www.trooth.co/docs/api';
+const SIGNATURE_URL = 'https://www.trooth.co/docs/verifiable-evidence';
 
 let vscode = null;
 let statusBarItem = null;
 
+// The one setting this version reads. 0.1.1 also read an API key, a host and
+// a list of frameworks and did nothing with them; an unused place to put a key
+// is a place a key leaks from, so 0.1.2 removed all three.
 function getConfig() {
   const config = vscode.workspace.getConfiguration('trooth');
   return {
-    apiKey: config.get('apiKey') || process.env.TROOTH_API_KEY || '',
-    host: config.get('host') || 'https://api.trooth.co',
-    frameworks: config.get('frameworks') || '',
     showStatusBar: config.get('showStatusBar') !== false
   };
 }
@@ -39,23 +40,17 @@ function commandScan() {
 
 function commandCheckDrift() {
   vscode.window.showInformationMessage(
-    'This extension does not read company records. To read a company\'s public record, run "npx trooth check <domain>" in the integrated terminal. It needs no key and no account.'
+    'This extension does not read company records. To read a company\'s public record, run "npx trooth check <domain>" in the integrated terminal. It needs no key and no account, and it sends the domain you ask about to api.trooth.co in the request URL.'
   );
 }
 
-function commandVerifyReceipt() {
-  vscode.window
-    .showOpenDialog({
-      canSelectMany: false,
-      filters: { 'JSON': ['json'] },
-      title: 'Choose a JSON file (this version does not check signatures)'
-    })
-    .then(function (uris) {
-      if (!uris || uris.length === 0) return;
-      vscode.window.showInformationMessage(
-        'Selected ' + uris[0].fsPath + '. This version does not check signatures. Trooth\'s public signing keys are at https://www.trooth.co/verify/keys, and the procedure for checking a signature yourself is at https://github.com/troothllc/trooth-signatures.'
-      );
-    });
+function commandShowSignatureInstructions() {
+  vscode.window.showInformationMessage(
+    'This extension does not check signatures. Trooth signs one object, the witness statement for a reading it took; the instructions for checking it yourself, offline, are on trooth.co.',
+    'Open instructions'
+  ).then(function (choice) {
+    if (choice === 'Open instructions') vscode.env.openExternal(vscode.Uri.parse(SIGNATURE_URL));
+  });
 }
 
 function commandShowTrustCenter() {
@@ -86,7 +81,7 @@ function activate(context) {
   const commands = [
     vscode.commands.registerCommand('trooth.scan', commandScan),
     vscode.commands.registerCommand('trooth.checkDrift', commandCheckDrift),
-    vscode.commands.registerCommand('trooth.verifyReceipt', commandVerifyReceipt),
+    vscode.commands.registerCommand('trooth.showSignatureInstructions', commandShowSignatureInstructions),
     vscode.commands.registerCommand('trooth.showTrustCenter', commandShowTrustCenter),
     vscode.commands.registerCommand('trooth.openTrustProfile', commandOpenTrustProfile)
   ];
@@ -119,6 +114,7 @@ function deactivate() {
 }
 
 module.exports = {
+  getConfig: getConfig,
   activate: activate,
   deactivate: deactivate
 };
